@@ -139,41 +139,30 @@ router.route('/getEmployees')
         })
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-router.route('/fetchStates')
+router.route('/getHotels')
     .get((req, res) => {
-        console.log('inside--')
-        var sql_fetch_states = 'select * from hb_states';
+        console.log('inside getHotels')
+        var sql_getHotels = `select t1.*,t2.*,t3.* from hb_hotels t1 join hb_accessibility t2
+        on t1.hotelId=t2.hotelId
+        right join hb_amenities t3
+        on t1.hotelId=t3.hotelId where cityId=1;`
+
+        // var sql_getHotels=`select * from hb_hotels where cityId=1;`
+
 
         connect.connection()
             .then((con) => {
-                con.query(sql_fetch_states, (err, result) => {
+                con.query(sql_getHotels, (err, result) => {
                     con.release();
                     if (err) {
-                        console.log('Error while fetching states', err.stack);
+                        console.log('Error while getHotels', err.stack);
                         res.json({ status: -1 });
                     }
                     else {
-                       console.log('response in fetch states',result);
-                       res.json({status:1,status:result})
+                        console.log('response in getHotels', result);
+                        // let hotelid=result[0].hotelId;
+                        // console.log('hotel id---',hotelid)
+                        res.json({ status: 1, status: result })
                     }
                 })
             })
@@ -183,35 +172,5 @@ router.route('/fetchStates')
             })
 
     })
-
-   
-
-    router.route('/fetchHotels')
-    .get((req, res) => {
-        console.log('inside fetch hotels',req.headers.stateid,req.headers.cityid,req.headers.noofperson,req.headers.starrating)
-        var sql_fetch_states = `select * from hb_hotels where state_id=${req.headers.stateid} and city_id=${req.headers.cityid} 
-                                and no_of_persons>=${req.headers.noofperson} and star_rating>=${req.headers.starrating};`
-
-        connect.connection()
-            .then((con) => {
-                con.query(sql_fetch_states, (err, result) => {
-                    con.release();
-                    if (err) {
-                        console.log('Error while fetching hotels', err.stack);
-                        res.json({ status: -1 });
-                    }
-                    else {
-                       console.log('response in fetch hotels',result);
-                       res.json({status:1,status:result})
-                    }
-                })
-            })
-            .catch((e) => {
-                console.log('Error in DB connection:', e);
-                res.json({ status: -2 });
-            })
-
-    })
-
 
 module.exports = router;
