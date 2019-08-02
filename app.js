@@ -34,6 +34,7 @@ app.use(function (req, res, next) {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/search', require('./routes/searchmodule'));
+app.use('/booking', require('./routes/booking'));
 // catch 404 and forward to error handlers
 app.use(function(req, res, next) {
   console.log('Response',res)
